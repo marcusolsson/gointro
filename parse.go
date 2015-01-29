@@ -160,14 +160,12 @@ func tokenize(reader io.Reader) []string {
 						tokens = append(tokens, out)
 					}
 					buf = ""
-				} else {
 				}
 			}
 		case quoteState:
 			switch s {
 			case "\"":
 				state = initialState
-			default:
 			}
 		}
 
