@@ -61,27 +61,17 @@ func Parse(r io.Reader) (Collection, error) {
 
 		switch val {
 		case "game":
-			s.consume("game")
-			s.consume("(")
-
 			g, err := parseGame(s)
 			if err != nil {
 				return Collection{}, err
 			}
 
-			s.consume(")")
-
 			c.Games = append(c.Games, g)
 		case "clrmamepro":
-			s.consume("clrmamepro")
-			s.consume("(")
-
 			info, err := parseFileInfo(s)
 			if err != nil {
 				return Collection{}, err
 			}
-
-			s.consume(")")
 
 			c.FileInfo = info
 		}
@@ -178,6 +168,9 @@ func tokenize(reader io.Reader) []string {
 func parseFileInfo(s *tokenStream) (FileInfo, error) {
 	var info FileInfo
 
+	s.consume("clrmamepro")
+	s.consume("(")
+
 	parsing := true
 	for parsing {
 		var err error
@@ -211,11 +204,16 @@ func parseFileInfo(s *tokenStream) (FileInfo, error) {
 		}
 	}
 
+	s.consume(")")
+
 	return info, nil
 }
 
 func parseGame(s *tokenStream) (Game, error) {
 	var g Game
+
+	s.consume("game")
+	s.consume("(")
 
 	parsing := true
 	for parsing {
@@ -250,14 +248,16 @@ func parseGame(s *tokenStream) (Game, error) {
 		}
 	}
 
+	s.consume(")")
+
 	return g, nil
 }
 
 func parseROM(s *tokenStream) (ROM, error) {
+	var r ROM
+
 	s.consume("rom")
 	s.consume("(")
-
-	var r ROM
 
 	parsing := true
 	for parsing {
