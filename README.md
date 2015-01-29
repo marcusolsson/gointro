@@ -10,7 +10,7 @@ Parse datsets from the DAT-o-MATIC.
 ## Installation
 
 ```bash
-go get -u github.com/marcusolsson/gotro
+go get github.com/marcusolsson/gotro
 ```
 
 ## License
