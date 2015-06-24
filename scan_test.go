@@ -1,7 +1,6 @@
 package gotro
 
 import (
-	"log"
 	"strings"
 	"testing"
 )
@@ -58,7 +57,7 @@ var tests = []struct {
 			{Token: WS, Value: " "},
 			{Token: IDENT, Value: "size"},
 			{Token: WS, Value: " "},
-			{Token: INTEGER, Value: "2621440"},
+			{Token: IDENT, Value: "2621440"},
 			{Token: WS, Value: " "},
 			{Token: RIGHTPAREN, Value: `)`},
 		},
@@ -92,7 +91,7 @@ var tests = []struct {
 			{Token: WS, Value: " "},
 			{Token: IDENT, Value: "size"},
 			{Token: WS, Value: " "},
-			{Token: INTEGER, Value: "2621440"},
+			{Token: IDENT, Value: "2621440"},
 			{Token: WS, Value: " "},
 			{Token: RIGHTPAREN, Value: `)`},
 		},
@@ -105,9 +104,7 @@ func TestScanner(t *testing.T) {
 		s := NewScanner(r)
 
 		for _, p := range tt.Out {
-
 			tok, str := s.Scan()
-			log.Println(tok, str)
 			if tok != p.Token {
 				t.Fatalf("unexpected token: %s, expected %s", tok, p.Token)
 			}

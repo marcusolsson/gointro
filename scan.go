@@ -21,6 +21,9 @@ const (
 
 	LEFTPAREN
 	RIGHTPAREN
+
+	GAMETYPE
+	ROMTYPE
 )
 
 func (t Token) String() string {
@@ -39,6 +42,10 @@ func (t Token) String() string {
 		return "LEFTPAREN"
 	case RIGHTPAREN:
 		return "RIGHTPAREN"
+	case GAMETYPE:
+		return "GAMETYPE"
+	case ROMTYPE:
+		return "ROMTYPE"
 	default:
 		return ""
 	}
@@ -77,12 +84,9 @@ func (s *Scanner) Scan() (Token, string) {
 	if unicode.IsSpace(ch) {
 		s.unread()
 		return s.scanSpace()
-	} else if unicode.IsLetter(ch) {
+	} else if unicode.IsLetter(ch) || unicode.IsDigit(ch) {
 		s.unread()
 		return s.scanIdent()
-	} else if unicode.IsDigit(ch) {
-		s.unread()
-		return s.scanInt()
 	} else if isQuote(ch) {
 		s.unread()
 		return s.scanQuote()
@@ -92,6 +96,8 @@ func (s *Scanner) Scan() (Token, string) {
 		} else if ch == ')' {
 			return RIGHTPAREN, ")"
 		}
+	} else if ch == eof {
+		return EOF, ""
 	}
 
 	return ILLEGAL, ""
@@ -130,7 +136,7 @@ func (s *Scanner) scanIdent() (Token, string) {
 	for {
 		if ch := s.read(); ch == eof {
 			break
-		} else if !unicode.IsLetter(ch) {
+		} else if !unicode.IsLetter(ch) && !unicode.IsDigit(ch) && ch != '-' {
 			s.unread()
 			break
 		} else {
