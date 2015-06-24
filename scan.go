@@ -1,4 +1,4 @@
-package gotro
+package main
 
 import (
 	"bufio"
