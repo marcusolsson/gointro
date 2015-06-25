@@ -71,49 +71,38 @@ func (p *Parser) parseFileInfo() (FileInfo, error) {
 
 	token, value = p.scanIgnoreWhitespace()
 	if token != IDENT || value != "clrmamepro" {
-		return FileInfo{}, fmt.Errorf("unexpected token %s", value)
+		return FileInfo{}, errUnexpectedToken(value)
 	}
 
 	token, value = p.scanIgnoreWhitespace()
 	if token != LEFTPAREN {
-		return FileInfo{}, fmt.Errorf("unexpected token %s", value)
+		return FileInfo{}, errUnexpectedToken(value)
 	}
 
 	for {
 		token, value = p.scanIgnoreWhitespace()
 		if token == EOF || token == RIGHTPAREN {
 			break
+		} else if token != IDENT {
+			continue
 		}
 
-		if token == IDENT {
-			switch value {
-			case "name":
-				t, v := p.scanIgnoreWhitespace()
-				if t != IDENT {
-					return FileInfo{}, fmt.Errorf("unexpected token %s", v)
-				}
-				info.Name = v
-			case "description":
-				t, v := p.scanIgnoreWhitespace()
-				if t != IDENT {
-					return FileInfo{}, fmt.Errorf("unexpected token %s", v)
-				}
-				info.Description = v
-			case "version":
-				t, v := p.scanIgnoreWhitespace()
-				if t != IDENT {
-					return FileInfo{}, fmt.Errorf("unexpected token %s", v)
-				}
-				info.Version = v
-			case "comment":
-				t, v := p.scanIgnoreWhitespace()
-				if t != IDENT {
-					return FileInfo{}, fmt.Errorf("unexpected token %s", v)
-				}
-				info.Comment = v
-			default:
-				return FileInfo{}, fmt.Errorf("unexpected token %s", value)
-			}
+		t, v := p.scanIgnoreWhitespace()
+		if t != IDENT {
+			return FileInfo{}, errUnexpectedToken(v)
+		}
+
+		switch value {
+		case "name":
+			info.Name = v
+		case "description":
+			info.Description = v
+		case "version":
+			info.Version = v
+		case "comment":
+			info.Comment = v
+		default:
+			return FileInfo{}, errUnexpectedToken(value)
 		}
 	}
 
@@ -130,49 +119,44 @@ func (p *Parser) parseGame() (Game, error) {
 
 	token, value = p.scanIgnoreWhitespace()
 	if token != IDENT || value != "game" {
-		return Game{}, fmt.Errorf("unexpected token %s", value)
+		return Game{}, errUnexpectedToken(value)
 	}
 
 	token, value = p.scanIgnoreWhitespace()
 	if token != LEFTPAREN {
-		return Game{}, fmt.Errorf("unexpected token %s", value)
+		return Game{}, errUnexpectedToken(value)
 	}
 
 	for {
 		token, value = p.scanIgnoreWhitespace()
 		if token == EOF || token == RIGHTPAREN {
 			break
+		} else if token != IDENT {
+			continue
 		}
 
-		if token == IDENT {
+		if value == "rom" {
+			p.unscan()
+			r, err := p.parseROM()
+			if err != nil {
+				return Game{}, err
+			}
+			game.ROM = append(game.ROM, r)
+		} else {
+			t, v := p.scanIgnoreWhitespace()
+			if t != IDENT {
+				return Game{}, errUnexpectedToken(v)
+			}
+
 			switch value {
 			case "name":
-				t, v := p.scanIgnoreWhitespace()
-				if t != IDENT {
-					return Game{}, fmt.Errorf("unexpected token %s", v)
-				}
 				game.Name = v
 			case "description":
-				t, v := p.scanIgnoreWhitespace()
-				if t != IDENT {
-					return Game{}, fmt.Errorf("unexpected token %s", v)
-				}
 				game.Description = v
 			case "serial":
-				t, v := p.scanIgnoreWhitespace()
-				if t != IDENT {
-					return Game{}, fmt.Errorf("unexpected token %s", v)
-				}
 				game.Serial = v
-			case "rom":
-				p.unscan()
-				r, err := p.parseROM()
-				if err != nil {
-					return Game{}, err
-				}
-				game.ROM = append(game.ROM, r)
 			default:
-				return Game{}, fmt.Errorf("unexpected token %s", value)
+				return Game{}, errUnexpectedToken(value)
 			}
 		}
 	}
@@ -190,59 +174,42 @@ func (p *Parser) parseROM() (ROM, error) {
 
 	token, value = p.scanIgnoreWhitespace()
 	if token != IDENT || value != "rom" {
-		return ROM{}, fmt.Errorf("unexpected token %s", value)
+		return ROM{}, errUnexpectedToken(value)
 	}
 
 	token, value = p.scanIgnoreWhitespace()
 	if token != LEFTPAREN {
-		return ROM{}, fmt.Errorf("unexpected token %s", value)
+		return ROM{}, errUnexpectedToken(value)
 	}
 
 	for {
 		token, value = p.scanIgnoreWhitespace()
 		if token == EOF || token == RIGHTPAREN {
 			break
+		} else if token != IDENT {
+			continue
 		}
 
-		if token == IDENT {
-			switch value {
-			case "name":
-				t, v := p.scanIgnoreWhitespace()
-				if t != IDENT {
-					return ROM{}, fmt.Errorf("unexpected token %s", v)
-				}
-				rom.Name = v
-			case "size":
-				t, v := p.scanIgnoreWhitespace()
-				if t != IDENT {
-					return ROM{}, fmt.Errorf("unexpected token %s", v)
-				}
-				rom.Size = v
-			case "crc":
-				t, v := p.scanIgnoreWhitespace()
-				if t != IDENT {
-					return ROM{}, fmt.Errorf("unexpected token %s", v)
-				}
-				rom.CRC = v
-			case "md5":
-				t, v := p.scanIgnoreWhitespace()
-				if t != IDENT {
-					return ROM{}, fmt.Errorf("unexpected token %s", v)
-				}
-				rom.MD5 = v
-			case "sha1":
-				t, v := p.scanIgnoreWhitespace()
-				if t != IDENT {
-					return ROM{}, fmt.Errorf("unexpected token %s", v)
-				}
-				rom.SHA1 = v
-			case "flags":
-				t, v := p.scanIgnoreWhitespace()
-				if t != IDENT {
-					return ROM{}, fmt.Errorf("unexpected token %s", v)
-				}
-				rom.Flags = v
-			}
+		t, v := p.scanIgnoreWhitespace()
+		if t != IDENT {
+			return ROM{}, errUnexpectedToken(v)
+		}
+
+		switch value {
+		case "name":
+			rom.Name = v
+		case "size":
+			rom.Size = v
+		case "crc":
+			rom.CRC = v
+		case "md5":
+			rom.MD5 = v
+		case "sha1":
+			rom.SHA1 = v
+		case "flags":
+			rom.Flags = v
+		default:
+			return ROM{}, errUnexpectedToken(value)
 		}
 	}
 
@@ -272,4 +239,8 @@ func (p *Parser) scan() (tok Token, val string) {
 
 func (p *Parser) unscan() {
 	p.buf.size = 1
+}
+
+func errUnexpectedToken(t string) error {
+	return fmt.Errorf("unexpected token  %s", t)
 }
