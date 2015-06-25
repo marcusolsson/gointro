@@ -15,13 +15,9 @@ const (
 	ILLEGAL Token = iota
 	WS
 	EOF
-
 	IDENT
-	INTEGER
-
 	LEFTPAREN
 	RIGHTPAREN
-
 	GAMETYPE
 	ROMTYPE
 )
@@ -36,8 +32,6 @@ func (t Token) String() string {
 		return "EOF"
 	case IDENT:
 		return "IDENT"
-	case INTEGER:
-		return "INTEGER"
 	case LEFTPAREN:
 		return "LEFTPAREN"
 	case RIGHTPAREN:
@@ -145,24 +139,6 @@ func (s *Scanner) scanIdent() (Token, string) {
 	}
 
 	return IDENT, buf.String()
-}
-
-func (s *Scanner) scanInt() (Token, string) {
-	var buf bytes.Buffer
-	buf.WriteRune(s.read())
-
-	for {
-		if ch := s.read(); ch == eof {
-			break
-		} else if !unicode.IsDigit(ch) {
-			s.unread()
-			break
-		} else {
-			_, _ = buf.WriteRune(ch)
-		}
-	}
-
-	return INTEGER, buf.String()
 }
 
 func (s *Scanner) scanQuote() (Token, string) {
