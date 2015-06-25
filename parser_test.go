@@ -5,6 +5,28 @@ import (
 	"testing"
 )
 
+func TestParseInvalidFileInfo(t *testing.T) {
+	r := strings.NewReader(`clrmamepro ( invalid )`)
+
+	p := NewParser(r)
+
+	_, err := p.Parse()
+	if err == nil {
+		t.Fatal("unexpected success")
+	}
+}
+
+func TestParseInvalidGame(t *testing.T) {
+	r := strings.NewReader(`game ( invalid )`)
+
+	p := NewParser(r)
+
+	_, err := p.Parse()
+	if err == nil {
+		t.Fatal("unexpected success")
+	}
+}
+
 func TestParser(t *testing.T) {
 	r := strings.NewReader(`clrmamepro (
         name "Test Name"

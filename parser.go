@@ -111,6 +111,8 @@ func (p *Parser) parseFileInfo() (FileInfo, error) {
 					return FileInfo{}, fmt.Errorf("unexpected token %s", v)
 				}
 				info.Comment = v
+			default:
+				return FileInfo{}, fmt.Errorf("unexpected token %s", value)
 			}
 		}
 	}
@@ -169,6 +171,8 @@ func (p *Parser) parseGame() (Game, error) {
 					return Game{}, err
 				}
 				game.ROM = append(game.ROM, r)
+			default:
+				return Game{}, fmt.Errorf("unexpected token %s", value)
 			}
 		}
 	}
