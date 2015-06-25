@@ -168,7 +168,7 @@ func (p *Parser) parseGame() (Game, error) {
 				if err != nil {
 					return Game{}, err
 				}
-				game.ROM = r
+				game.ROM = append(game.ROM, r)
 			}
 		}
 	}

@@ -56,15 +56,17 @@ func main() {
 	}
 
 	for _, g := range col.Games {
-		if g.ROM.MD5 != md5hash && g.ROM.SHA1 != sha1hash {
-			continue
-		}
+		for _, r := range g.ROM {
+			if r.MD5 != md5hash && r.SHA1 != sha1hash {
+				continue
+			}
 
-		b, err := json.MarshalIndent(g, "", "  ")
-		if err != nil {
-			panic(err)
-		}
+			b, err := json.MarshalIndent(r, "", "  ")
+			if err != nil {
+				panic(err)
+			}
 
-		fmt.Println(string(b))
+			fmt.Println(string(b))
+		}
 	}
 }

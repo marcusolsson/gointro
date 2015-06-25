@@ -19,7 +19,7 @@ type Game struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	Serial      string `json:"serial,omitempty"`
-	ROM         ROM    `json:"rom"`
+	ROM         []ROM  `json:"rom"`
 }
 
 // ROM contains means to validate a ROM file.
