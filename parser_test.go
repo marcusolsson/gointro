@@ -60,12 +60,12 @@ game (
 		t.Fatalf("unexpected game description: %s", col.Games[0].Description)
 	}
 
-	if col.Games[0].ROM.Name != `"Test Name"` {
-		t.Fatalf("unexpected ROM name: %s", col.Games[0].ROM.Name)
+	if col.Games[0].ROM[0].Name != `"Test Name"` {
+		t.Fatalf("unexpected ROM name: %s", col.Games[0].ROM[0].Name)
 	}
 
-	if col.Games[0].ROM.Size != `2621440` {
-		t.Fatalf("unexpected ROM size: %s", col.Games[0].ROM.Size)
+	if col.Games[0].ROM[0].Size != `2621440` {
+		t.Fatalf("unexpected ROM size: %s", col.Games[0].ROM[0].Size)
 	}
 
 }
