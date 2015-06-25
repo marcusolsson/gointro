@@ -65,6 +65,6 @@ func main() {
 			panic(err)
 		}
 
-		fmt.Printf("Found matching ROM:\n%s\n", b)
+		fmt.Println(string(b))
 	}
 }
