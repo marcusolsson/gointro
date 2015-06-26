@@ -6,6 +6,14 @@
 
 Check if a file belongs to a datset from [DAT-o-MATIC](http://datomatic.no-intro.org).
 
+## Usage
+
+```bash
+gotro -d <datset> -f <file>
+```
+
+Output is the real name according to the datset. If the file was not in the datset, the output will be empty.
+
 ## Installation
 
 ```bash
