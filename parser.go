@@ -54,6 +54,8 @@ func (p *Parser) Parse() (*Collection, error) {
 				}
 
 				col.Games = append(col.Games, g)
+			default:
+				return nil, errUnexpectedToken(val)
 			}
 		}
 	}
@@ -87,19 +89,30 @@ func (p *Parser) parseFileInfo() (FileInfo, error) {
 			continue
 		}
 
-		t, v := p.scanIgnoreWhitespace()
-		if t != IDENT {
-			return FileInfo{}, errUnexpectedToken(v)
-		}
-
 		switch value {
 		case "name":
+			t, v := p.scanIgnoreWhitespace()
+			if t != IDENT {
+				return FileInfo{}, errUnexpectedToken(v)
+			}
 			info.Name = v
 		case "description":
+			t, v := p.scanIgnoreWhitespace()
+			if t != IDENT {
+				return FileInfo{}, errUnexpectedToken(v)
+			}
 			info.Description = v
 		case "version":
+			t, v := p.scanIgnoreWhitespace()
+			if t != IDENT {
+				return FileInfo{}, errUnexpectedToken(v)
+			}
 			info.Version = v
 		case "comment":
+			t, v := p.scanIgnoreWhitespace()
+			if t != IDENT {
+				return FileInfo{}, errUnexpectedToken(v)
+			}
 			info.Comment = v
 		default:
 			return FileInfo{}, errUnexpectedToken(value)
@@ -135,29 +148,34 @@ func (p *Parser) parseGame() (Game, error) {
 			continue
 		}
 
-		if value == "rom" {
+		switch value {
+		case "name":
+			t, v := p.scanIgnoreWhitespace()
+			if t != IDENT {
+				return Game{}, errUnexpectedToken(v)
+			}
+			game.Name = v
+		case "description":
+			t, v := p.scanIgnoreWhitespace()
+			if t != IDENT {
+				return Game{}, errUnexpectedToken(v)
+			}
+			game.Description = v
+		case "serial":
+			t, v := p.scanIgnoreWhitespace()
+			if t != IDENT {
+				return Game{}, errUnexpectedToken(v)
+			}
+			game.Serial = v
+		case "rom":
 			p.unscan()
 			r, err := p.parseROM()
 			if err != nil {
 				return Game{}, err
 			}
 			game.ROM = append(game.ROM, r)
-		} else {
-			t, v := p.scanIgnoreWhitespace()
-			if t != IDENT {
-				return Game{}, errUnexpectedToken(v)
-			}
-
-			switch value {
-			case "name":
-				game.Name = v
-			case "description":
-				game.Description = v
-			case "serial":
-				game.Serial = v
-			default:
-				return Game{}, errUnexpectedToken(value)
-			}
+		default:
+			return Game{}, errUnexpectedToken(value)
 		}
 	}
 
@@ -242,5 +260,5 @@ func (p *Parser) unscan() {
 }
 
 func errUnexpectedToken(t string) error {
-	return fmt.Errorf("unexpected token  %s", t)
+	return fmt.Errorf("unexpected token %s", t)
 }

@@ -5,30 +5,23 @@ import (
 	"testing"
 )
 
-func TestParseInvalidFileInfo(t *testing.T) {
-	r := strings.NewReader(`clrmamepro ( invalid )`)
-
-	p := NewParser(r)
-
-	_, err := p.Parse()
-	if err == nil {
-		t.Fatal("unexpected success")
-	}
-}
-
-func TestParseInvalidGame(t *testing.T) {
-	r := strings.NewReader(`game ( invalid )`)
-
-	p := NewParser(r)
-
-	_, err := p.Parse()
-	if err == nil {
-		t.Fatal("unexpected success")
-	}
-}
-
-func TestParser(t *testing.T) {
-	r := strings.NewReader(`clrmamepro (
+var parseTests = []struct {
+	In  string
+	Out *Collection
+	Err error
+}{
+	{
+		In:  `clrmamepro ( invalid )`,
+		Out: nil,
+		Err: errUnexpectedToken("invalid"),
+	},
+	{
+		In:  `game ( invalid )`,
+		Out: nil,
+		Err: errUnexpectedToken("invalid"),
+	},
+	{
+		In: `clrmamepro (
         name "Test Name"
         description "Test Description"
         version 20080101-123456
@@ -36,58 +29,97 @@ func TestParser(t *testing.T) {
 )
 
 game (
-	name "Test Name"
-	description "Test Description"
+	name "First Game"
+	description "First Game Description"
 	rom ( name "Test Name" size 2621440 crc C167987D md5 A990AE4416DD75F7C68C5DB06425D648 sha1 21286747D360C03E3BF86CD4504508CE55DEFF8F )
 )
 
 game (
-	name "Test Name"
-	description "Test Description"
+	name "Second Game"
+	description "Second Game Description"
 	rom ( name "Test Name" size 2621440 crc C167987D md5 A990AE4416DD75F7C68C5DB06425D648 sha1 21286747D360C03E3BF86CD4504508CE55DEFF8F )
-)`)
+)`,
+		Out: &Collection{
+			FileInfo: FileInfo{
+				Name:        `"Test Name"`,
+				Description: `"Test Description"`,
+				Version:     "20080101-123456",
+				Comment:     `"Test Comment"`,
+			},
+			Games: []Game{
+				{
+					Name:        `"First Game"`,
+					Description: `"First Game Description"`,
+					ROM: []ROM{
+						{
+							Name: `"Test Name"`,
+							Size: "2621440",
+							CRC:  "C167987D",
+							MD5:  "A990AE4416DD75F7C68C5DB06425D648",
+							SHA1: "21286747D360C03E3BF86CD4504508CE55DEFF8F",
+						},
+					},
+				},
+				{
+					Name:        `"Second Game"`,
+					Description: `"Second Game Description"`,
+					ROM: []ROM{
+						{
+							Name: `"Test Name"`,
+							Size: "2621440",
+							CRC:  "C167987D",
+							MD5:  "A990AE4416DD75F7C68C5DB06425D648",
+							SHA1: "21286747D360C03E3BF86CD4504508CE55DEFF8F",
+						},
+					},
+				},
+			},
+		},
+		Err: nil,
+	},
+}
 
-	p := NewParser(r)
+func TestParser(t *testing.T) {
+	for _, tt := range parseTests {
+		r := strings.NewReader(tt.In)
+		p := NewParser(r)
+		col, err := p.Parse()
+		if err != nil {
+			if err.Error() != tt.Err.Error() {
+				t.Fatalf("unexpected error: %q, expected: %q", err, tt.Err)
+			}
+			continue
+		}
 
-	col, err := p.Parse()
-	if err != nil {
-		t.Fatal(err)
+		if col.FileInfo != tt.Out.FileInfo {
+			t.Fatalf("expected %q, got %q", tt.Out.FileInfo, col.FileInfo)
+		}
+
+		if len(col.Games) != len(tt.Out.Games) {
+			t.Fatal("unexpected number of games")
+		}
+
+		for i, g := range col.Games {
+			e := tt.Out.Games[i]
+			if g.Name != e.Name {
+				t.Errorf("expected %v, got %v", e.Name, g.Name)
+			}
+			if g.Description != e.Description {
+				t.Errorf("expected %v, got %v", e.Description, g.Description)
+			}
+			if g.Serial != e.Serial {
+				t.Errorf("expected %v, got %v", e.Description, g.Description)
+			}
+
+			if len(g.ROM) != len(e.ROM) {
+				t.Fatal("unexpected number of ROMs")
+			}
+
+			for j, rom := range g.ROM {
+				if rom != e.ROM[j] {
+					t.Errorf("expected %v, got %v", e.ROM[j], rom)
+				}
+			}
+		}
 	}
-
-	if col.FileInfo.Name != `"Test Name"` {
-		t.Fatalf("unexpected collection name: %s", col.FileInfo.Name)
-	}
-
-	if col.FileInfo.Description != `"Test Description"` {
-		t.Fatalf("unexpected collection description: %s", col.FileInfo.Description)
-	}
-
-	if col.FileInfo.Version != `20080101-123456` {
-		t.Fatalf("unexpected collection version: %s", col.FileInfo.Version)
-	}
-
-	if col.FileInfo.Comment != `"Test Comment"` {
-		t.Fatalf("unexpected collection comment: %s", col.FileInfo.Comment)
-	}
-
-	if len(col.Games) != 2 {
-		t.Fatalf("unexpected number of games: %v", len(col.Games))
-	}
-
-	if col.Games[0].Name != `"Test Name"` {
-		t.Fatalf("unexpected game name: %s", col.Games[0].Name)
-	}
-
-	if col.Games[0].Description != `"Test Description"` {
-		t.Fatalf("unexpected game description: %s", col.Games[0].Description)
-	}
-
-	if col.Games[0].ROM[0].Name != `"Test Name"` {
-		t.Fatalf("unexpected ROM name: %s", col.Games[0].ROM[0].Name)
-	}
-
-	if col.Games[0].ROM[0].Size != `2621440` {
-		t.Fatalf("unexpected ROM size: %s", col.Games[0].ROM[0].Size)
-	}
-
 }
