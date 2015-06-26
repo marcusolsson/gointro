@@ -28,6 +28,7 @@ var parseTests = []struct {
 	{In: `clrmamepro ( description )`, Err: errUnexpectedRightParen},
 	{In: `clrmamepro ( version )`, Err: errUnexpectedRightParen},
 	{In: `clrmamepro ( comment )`, Err: errUnexpectedRightParen},
+	{In: `clrmamepro ( forcenodump )`, Err: errUnexpectedRightParen},
 	{In: `game ()`, Out: &Collection{Games: make([]Game, 1)}},
 	{In: `game (`, Err: errMissingParen},
 	{In: `game (()`, Err: errUnexpectedLeftParen},
@@ -54,6 +55,7 @@ var parseTests = []struct {
         description "Test Description"
         version 20080101-123456
         comment "Test Comment"
+		forcenodump required
 )
 
 game (
@@ -74,6 +76,7 @@ game (
 				Description: `"Test Description"`,
 				Version:     "20080101-123456",
 				Comment:     `"Test Comment"`,
+				Forcenodump: "required",
 			},
 			Games: []Game{
 				{

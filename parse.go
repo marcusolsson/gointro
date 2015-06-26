@@ -116,6 +116,12 @@ func (p *Parser) parseFileInfo() (FileInfo, error) {
 				return FileInfo{}, errUnexpectedToken(v)
 			}
 			info.Comment = v
+		case "forcenodump":
+			t, v := p.scanIgnoreWhitespace()
+			if t != IDENT {
+				return FileInfo{}, errUnexpectedToken(v)
+			}
+			info.Forcenodump = v
 		default:
 			return FileInfo{}, errUnexpectedToken(value)
 		}

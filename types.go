@@ -12,6 +12,7 @@ type FileInfo struct {
 	Description string `json:"description"`
 	Version     string `json:"version"`
 	Comment     string `json:"comment,omitempty"`
+	Forcenodump string `json:"forcenodump,omitempty"`
 }
 
 // Game describes a game ...
