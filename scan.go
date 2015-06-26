@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"io"
+	"strings"
 	"unicode"
 )
 
@@ -156,5 +157,9 @@ func (s *Scanner) scanQuote() (Token, string) {
 		}
 	}
 
-	return IDENT, buf.String()
+	var str = buf.String()
+	str = strings.TrimPrefix(str, `"`)
+	str = strings.TrimSuffix(str, `"`)
+
+	return IDENT, str
 }

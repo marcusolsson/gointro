@@ -15,7 +15,7 @@ var tests = []struct {
 	Out []tokenValuePair
 }{
 	{In: ` `, Out: []tokenValuePair{{Token: WS, Value: " "}}},
-	{In: `"`, Out: []tokenValuePair{{Token: IDENT, Value: `"`}}},
+	{In: `""`, Out: []tokenValuePair{{Token: IDENT, Value: ``}}},
 	{In: `%`, Out: []tokenValuePair{{Token: ILLEGAL, Value: `%`}}},
 	{
 		In: "test",
@@ -28,7 +28,7 @@ var tests = []struct {
 		Out: []tokenValuePair{
 			{Token: IDENT, Value: "key"},
 			{Token: WS, Value: " "},
-			{Token: IDENT, Value: `"value"`},
+			{Token: IDENT, Value: "value"},
 		},
 	},
 	{
@@ -38,13 +38,13 @@ var tests = []struct {
 		Out: []tokenValuePair{
 			{Token: IDENT, Value: "game"},
 			{Token: WS, Value: " "},
-			{Token: LEFTPAREN, Value: `(`},
+			{Token: LEFTPAREN, Value: "("},
 			{Token: WS, Value: " "},
 			{Token: IDENT, Value: "name"},
 			{Token: WS, Value: " "},
-			{Token: IDENT, Value: `"Test Name"`},
+			{Token: IDENT, Value: "Test Name"},
 			{Token: WS, Value: " "},
-			{Token: RIGHTPAREN, Value: `)`},
+			{Token: RIGHTPAREN, Value: ")"},
 		},
 	},
 	{
@@ -52,17 +52,17 @@ var tests = []struct {
 		Out: []tokenValuePair{
 			{Token: IDENT, Value: "rom"},
 			{Token: WS, Value: " "},
-			{Token: LEFTPAREN, Value: `(`},
+			{Token: LEFTPAREN, Value: "("},
 			{Token: WS, Value: " "},
 			{Token: IDENT, Value: "name"},
 			{Token: WS, Value: " "},
-			{Token: IDENT, Value: `"Test Name"`},
+			{Token: IDENT, Value: "Test Name"},
 			{Token: WS, Value: " "},
 			{Token: IDENT, Value: "size"},
 			{Token: WS, Value: " "},
 			{Token: IDENT, Value: "2621440"},
 			{Token: WS, Value: " "},
-			{Token: RIGHTPAREN, Value: `)`},
+			{Token: RIGHTPAREN, Value: ")"},
 		},
 	},
 	{
@@ -78,11 +78,11 @@ var tests = []struct {
 			{Token: WS, Value: " "},
 			{Token: IDENT, Value: "name"},
 			{Token: WS, Value: " "},
-			{Token: IDENT, Value: `"Test Name"`},
+			{Token: IDENT, Value: "Test Name"},
 			{Token: WS, Value: " "},
 			{Token: IDENT, Value: "description"},
 			{Token: WS, Value: " "},
-			{Token: IDENT, Value: `"Test Description"`},
+			{Token: IDENT, Value: "Test Description"},
 			{Token: WS, Value: " "},
 			{Token: IDENT, Value: "rom"},
 			{Token: WS, Value: " "},
@@ -90,7 +90,7 @@ var tests = []struct {
 			{Token: WS, Value: " "},
 			{Token: IDENT, Value: "name"},
 			{Token: WS, Value: " "},
-			{Token: IDENT, Value: `"Test Name"`},
+			{Token: IDENT, Value: "Test Name"},
 			{Token: WS, Value: " "},
 			{Token: IDENT, Value: "size"},
 			{Token: WS, Value: " "},

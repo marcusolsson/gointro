@@ -72,20 +72,20 @@ game (
 )`,
 		Out: &Collection{
 			FileInfo: FileInfo{
-				Name:        `"Test Name"`,
-				Description: `"Test Description"`,
+				Name:        "Test Name",
+				Description: "Test Description",
 				Version:     "20080101-123456",
-				Comment:     `"Test Comment"`,
+				Comment:     "Test Comment",
 				Forcenodump: "required",
 			},
 			Games: []Game{
 				{
-					Name:        `"First Game"`,
-					Description: `"First Game Description"`,
+					Name:        "First Game",
+					Description: "First Game Description",
 					Serial:      "123",
 					ROM: []ROM{
 						{
-							Name:  `"Test Name"`,
+							Name:  "Test Name",
 							Size:  "2621440",
 							CRC:   "C167987D",
 							MD5:   "A990AE4416DD75F7C68C5DB06425D648",
@@ -95,11 +95,11 @@ game (
 					},
 				},
 				{
-					Name:        `"Second Game"`,
-					Description: `"Second Game Description"`,
+					Name:        "Second Game",
+					Description: "Second Game Description",
 					ROM: []ROM{
 						{
-							Name: `"Test Name"`,
+							Name: "Test Name",
 							Size: "2621440",
 							CRC:  "C167987D",
 							MD5:  "A990AE4416DD75F7C68C5DB06425D648",
@@ -109,7 +109,6 @@ game (
 				},
 			},
 		},
-		Err: nil,
 	},
 }
 
