@@ -94,7 +94,7 @@ func (s *Scanner) Scan() (Token, string) {
 		return EOF, ""
 	}
 
-	return ILLEGAL, ""
+	return ILLEGAL, string(ch)
 }
 
 func isQuote(ch rune) bool {

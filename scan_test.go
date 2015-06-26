@@ -14,6 +14,9 @@ var tests = []struct {
 	In  string
 	Out []tokenValuePair
 }{
+	{In: ` `, Out: []tokenValuePair{{Token: WS, Value: " "}}},
+	{In: `"`, Out: []tokenValuePair{{Token: IDENT, Value: `"`}}},
+	{In: `%`, Out: []tokenValuePair{{Token: ILLEGAL, Value: `%`}}},
 	{
 		In: "test",
 		Out: []tokenValuePair{
