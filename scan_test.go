@@ -74,7 +74,7 @@ var tests = []struct {
 		Out: []tokenValuePair{
 			{Token: IDENT, Value: "game"},
 			{Token: WS, Value: " "},
-			{Token: LEFTPAREN, Value: `(`},
+			{Token: LEFTPAREN, Value: "("},
 			{Token: WS, Value: " "},
 			{Token: IDENT, Value: "name"},
 			{Token: WS, Value: " "},
@@ -86,7 +86,7 @@ var tests = []struct {
 			{Token: WS, Value: " "},
 			{Token: IDENT, Value: "rom"},
 			{Token: WS, Value: " "},
-			{Token: LEFTPAREN, Value: `(`},
+			{Token: LEFTPAREN, Value: "("},
 			{Token: WS, Value: " "},
 			{Token: IDENT, Value: "name"},
 			{Token: WS, Value: " "},
@@ -96,7 +96,7 @@ var tests = []struct {
 			{Token: WS, Value: " "},
 			{Token: IDENT, Value: "2621440"},
 			{Token: WS, Value: " "},
-			{Token: RIGHTPAREN, Value: `)`},
+			{Token: RIGHTPAREN, Value: ")"},
 		},
 	},
 }
