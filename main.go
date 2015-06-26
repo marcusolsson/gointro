@@ -31,7 +31,8 @@ func main() {
 
 	f, err := os.Open(datset)
 	if err != nil {
-		panic(err)
+		fmt.Println("unable to open datset:", datset)
+		os.Exit(1)
 	}
 	defer f.Close()
 
@@ -39,20 +40,23 @@ func main() {
 
 	col, err := p.Parse()
 	if err != nil {
-		panic(err)
+		fmt.Println("unable to parse datset:", err)
+		os.Exit(1)
 	}
 
 	if filepath.Ext(input) == ".zip" {
 		r, err := zip.OpenReader(input)
 		if err != nil {
-			panic(err)
+			fmt.Println("unable to open archive")
+			os.Exit(1)
 		}
 		defer r.Close()
 
 		for _, f := range r.File {
 			rc, err := f.Open()
 			if err != nil {
-				panic(err)
+				fmt.Println("unable to open file within archive:", f.Name)
+				os.Exit(1)
 			}
 			defer rc.Close()
 
@@ -65,7 +69,8 @@ func main() {
 	} else {
 		in, err := os.Open(input)
 		if err != nil {
-			panic(err)
+			fmt.Println("unable to open input file:", input)
+			os.Exit(1)
 		}
 		defer in.Close()
 
