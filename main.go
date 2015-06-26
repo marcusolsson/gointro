@@ -5,7 +5,6 @@ import (
 	"crypto/md5"
 	"crypto/sha1"
 	"encoding/hex"
-	"encoding/json"
 	"errors"
 	"flag"
 	"fmt"
@@ -44,8 +43,6 @@ func main() {
 		panic(err)
 	}
 
-	roms := []ROM{}
-
 	if filepath.Ext(input) == ".zip" {
 		r, err := zip.OpenReader(input)
 		if err != nil {
@@ -63,7 +60,7 @@ func main() {
 			h1, h2 := hashReader(rc)
 			r, err := findROM(col, h1, h2)
 			if err == nil {
-				roms = append(roms, r)
+				fmt.Println(r.Name)
 			}
 		}
 	} else {
@@ -76,16 +73,9 @@ func main() {
 		h1, h2 := hashReader(in)
 		r, err := findROM(col, h1, h2)
 		if err == nil {
-			roms = append(roms, r)
+			fmt.Println(r.Name)
 		}
 	}
-
-	b, err := json.MarshalIndent(roms, "", "  ")
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println(string(b))
 }
 
 func findROM(col *Collection, md5hash, sha1hash string) (ROM, error) {
