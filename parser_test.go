@@ -13,13 +13,34 @@ var parseTests = []struct {
 }{
 	{In: `unknown ()`, Err: errUnexpectedToken("unknown")},
 	{In: `clrmamepro ()`, Out: &Collection{}},
-	{In: `clrmamepro ( invalid )`, Err: errUnexpectedToken("invalid")},
 	{In: `clrmamepro (`, Err: fmt.Errorf("missing paren")},
+	{In: `clrmamepro (()`, Err: errUnexpectedToken("(")},
 	{In: `clrmamepro )`, Err: errUnexpectedToken(")")},
+	{In: `clrmamepro ( invalid )`, Err: errUnexpectedToken("invalid")},
+	{In: `clrmamepro ( name )`, Err: errUnexpectedToken(")")},
+	{In: `clrmamepro ( description )`, Err: errUnexpectedToken(")")},
+	{In: `clrmamepro ( version )`, Err: errUnexpectedToken(")")},
+	{In: `clrmamepro ( comment )`, Err: errUnexpectedToken(")")},
 	{In: `game ()`, Out: &Collection{Games: make([]Game, 1)}},
-	{In: `game ( invalid )`, Err: errUnexpectedToken("invalid")},
 	{In: `game (`, Err: fmt.Errorf("missing paren")},
+	{In: `game (()`, Err: errUnexpectedToken("(")},
+	{In: `game ())`, Err: errUnexpectedToken(")")},
 	{In: `game )`, Err: errUnexpectedToken(")")},
+	{In: `game ( invalid )`, Err: errUnexpectedToken("invalid")},
+	{In: `game ( name )`, Err: errUnexpectedToken(")")},
+	{In: `game ( description )`, Err: errUnexpectedToken(")")},
+	{In: `game ( serial )`, Err: errUnexpectedToken(")")},
+	{In: `game ( rom ())`, Out: &Collection{Games: []Game{{ROM: make([]ROM, 1)}}}},
+	{In: `game ( rom (`, Err: fmt.Errorf("missing paren")},
+	{In: `game ( rom (()`, Err: errUnexpectedToken("(")},
+	{In: `game ( rom )`, Err: errUnexpectedToken(")")},
+	{In: `game ( rom ( invalid ) )`, Err: errUnexpectedToken("invalid")},
+	{In: `game ( rom ( name ) )`, Err: errUnexpectedToken(")")},
+	{In: `game ( rom ( size ) )`, Err: errUnexpectedToken(")")},
+	{In: `game ( rom ( crc ) )`, Err: errUnexpectedToken(")")},
+	{In: `game ( rom ( md5 ) )`, Err: errUnexpectedToken(")")},
+	{In: `game ( rom ( sha1 ) )`, Err: errUnexpectedToken(")")},
+	{In: `game ( rom ( flags ) )`, Err: errUnexpectedToken(")")},
 	{
 		In: `clrmamepro (
         name "Test Name"
@@ -31,7 +52,8 @@ var parseTests = []struct {
 game (
 	name "First Game"
 	description "First Game Description"
-	rom ( name "Test Name" size 2621440 crc C167987D md5 A990AE4416DD75F7C68C5DB06425D648 sha1 21286747D360C03E3BF86CD4504508CE55DEFF8F )
+	serial 123
+	rom ( name "Test Name" size 2621440 crc C167987D md5 A990AE4416DD75F7C68C5DB06425D648 sha1 21286747D360C03E3BF86CD4504508CE55DEFF8F flags verified)
 )
 
 game (
@@ -50,13 +72,15 @@ game (
 				{
 					Name:        `"First Game"`,
 					Description: `"First Game Description"`,
+					Serial:      "123",
 					ROM: []ROM{
 						{
-							Name: `"Test Name"`,
-							Size: "2621440",
-							CRC:  "C167987D",
-							MD5:  "A990AE4416DD75F7C68C5DB06425D648",
-							SHA1: "21286747D360C03E3BF86CD4504508CE55DEFF8F",
+							Name:  `"Test Name"`,
+							Size:  "2621440",
+							CRC:   "C167987D",
+							MD5:   "A990AE4416DD75F7C68C5DB06425D648",
+							SHA1:  "21286747D360C03E3BF86CD4504508CE55DEFF8F",
+							Flags: "verified",
 						},
 					},
 				},
@@ -108,7 +132,7 @@ func TestParser(t *testing.T) {
 				t.Errorf("expected %v, got %v", e.Description, g.Description)
 			}
 			if g.Serial != e.Serial {
-				t.Errorf("expected %v, got %v", e.Description, g.Description)
+				t.Errorf("expected %v, got %v", e.Serial, g.Serial)
 			}
 
 			if len(g.ROM) != len(e.ROM) {

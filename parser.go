@@ -32,31 +32,31 @@ func (p *Parser) Parse() (*Collection, error) {
 		tok, val := p.scanIgnoreWhitespace()
 		if tok == EOF {
 			break
+		} else if tok != IDENT {
+			return nil, errUnexpectedToken(val)
 		}
 
-		if tok == IDENT {
-			switch val {
-			case "clrmamepro":
-				p.unscan()
+		switch val {
+		case "clrmamepro":
+			p.unscan()
 
-				info, err := p.parseFileInfo()
-				if err != nil {
-					return nil, err
-				}
-
-				col.FileInfo = info
-			case "game":
-				p.unscan()
-
-				g, err := p.parseGame()
-				if err != nil {
-					return nil, err
-				}
-
-				col.Games = append(col.Games, g)
-			default:
-				return nil, errUnexpectedToken(val)
+			info, err := p.parseFileInfo()
+			if err != nil {
+				return nil, err
 			}
+
+			col.FileInfo = info
+		case "game":
+			p.unscan()
+
+			g, err := p.parseGame()
+			if err != nil {
+				return nil, err
+			}
+
+			col.Games = append(col.Games, g)
+		default:
+			return nil, errUnexpectedToken(val)
 		}
 	}
 
@@ -88,7 +88,7 @@ func (p *Parser) parseFileInfo() (FileInfo, error) {
 		} else if token == RIGHTPAREN {
 			break
 		} else if token != IDENT {
-			continue
+			return FileInfo{}, errUnexpectedToken(value)
 		}
 
 		switch value {
@@ -149,7 +149,7 @@ func (p *Parser) parseGame() (Game, error) {
 		} else if token == RIGHTPAREN {
 			break
 		} else if token != IDENT {
-			continue
+			return Game{}, errUnexpectedToken(value)
 		}
 
 		switch value {
@@ -211,26 +211,45 @@ func (p *Parser) parseROM() (ROM, error) {
 		} else if token == RIGHTPAREN {
 			break
 		} else if token != IDENT {
-			continue
-		}
-
-		t, v := p.scanIgnoreWhitespace()
-		if t != IDENT {
-			return ROM{}, errUnexpectedToken(v)
+			return ROM{}, errUnexpectedToken(value)
 		}
 
 		switch value {
 		case "name":
+			t, v := p.scanIgnoreWhitespace()
+			if t != IDENT {
+				return ROM{}, errUnexpectedToken(v)
+			}
 			rom.Name = v
 		case "size":
+			t, v := p.scanIgnoreWhitespace()
+			if t != IDENT {
+				return ROM{}, errUnexpectedToken(v)
+			}
 			rom.Size = v
 		case "crc":
+			t, v := p.scanIgnoreWhitespace()
+			if t != IDENT {
+				return ROM{}, errUnexpectedToken(v)
+			}
 			rom.CRC = v
 		case "md5":
+			t, v := p.scanIgnoreWhitespace()
+			if t != IDENT {
+				return ROM{}, errUnexpectedToken(v)
+			}
 			rom.MD5 = v
 		case "sha1":
+			t, v := p.scanIgnoreWhitespace()
+			if t != IDENT {
+				return ROM{}, errUnexpectedToken(v)
+			}
 			rom.SHA1 = v
 		case "flags":
+			t, v := p.scanIgnoreWhitespace()
+			if t != IDENT {
+				return ROM{}, errUnexpectedToken(v)
+			}
 			rom.Flags = v
 		default:
 			return ROM{}, errUnexpectedToken(value)
