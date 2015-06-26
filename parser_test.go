@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 )
@@ -10,16 +11,15 @@ var parseTests = []struct {
 	Out *Collection
 	Err error
 }{
-	{
-		In:  `clrmamepro ( invalid )`,
-		Out: nil,
-		Err: errUnexpectedToken("invalid"),
-	},
-	{
-		In:  `game ( invalid )`,
-		Out: nil,
-		Err: errUnexpectedToken("invalid"),
-	},
+	{In: `unknown ()`, Err: errUnexpectedToken("unknown")},
+	{In: `clrmamepro ()`, Out: &Collection{}},
+	{In: `clrmamepro ( invalid )`, Err: errUnexpectedToken("invalid")},
+	{In: `clrmamepro (`, Err: fmt.Errorf("missing paren")},
+	{In: `clrmamepro )`, Err: errUnexpectedToken(")")},
+	{In: `game ()`, Out: &Collection{Games: make([]Game, 1)}},
+	{In: `game ( invalid )`, Err: errUnexpectedToken("invalid")},
+	{In: `game (`, Err: fmt.Errorf("missing paren")},
+	{In: `game )`, Err: errUnexpectedToken(")")},
 	{
 		In: `clrmamepro (
         name "Test Name"

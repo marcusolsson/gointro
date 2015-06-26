@@ -83,7 +83,9 @@ func (p *Parser) parseFileInfo() (FileInfo, error) {
 
 	for {
 		token, value = p.scanIgnoreWhitespace()
-		if token == EOF || token == RIGHTPAREN {
+		if token == EOF {
+			return FileInfo{}, fmt.Errorf("missing paren")
+		} else if token == RIGHTPAREN {
 			break
 		} else if token != IDENT {
 			continue
@@ -142,7 +144,9 @@ func (p *Parser) parseGame() (Game, error) {
 
 	for {
 		token, value = p.scanIgnoreWhitespace()
-		if token == EOF || token == RIGHTPAREN {
+		if token == EOF {
+			return Game{}, fmt.Errorf("missing paren")
+		} else if token == RIGHTPAREN {
 			break
 		} else if token != IDENT {
 			continue
@@ -202,7 +206,9 @@ func (p *Parser) parseROM() (ROM, error) {
 
 	for {
 		token, value = p.scanIgnoreWhitespace()
-		if token == EOF || token == RIGHTPAREN {
+		if token == EOF {
+			return ROM{}, fmt.Errorf("missing paren")
+		} else if token == RIGHTPAREN {
 			break
 		} else if token != IDENT {
 			continue
