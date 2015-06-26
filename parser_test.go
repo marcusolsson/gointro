@@ -6,6 +6,12 @@ import (
 	"testing"
 )
 
+var (
+	errUnexpectedLeftParen  = errUnexpectedToken("(")
+	errUnexpectedRightParen = errUnexpectedToken(")")
+	errMissingParen         = fmt.Errorf("missing paren")
+)
+
 var parseTests = []struct {
 	In  string
 	Out *Collection
@@ -13,34 +19,35 @@ var parseTests = []struct {
 }{
 	{In: `unknown ()`, Err: errUnexpectedToken("unknown")},
 	{In: `clrmamepro ()`, Out: &Collection{}},
-	{In: `clrmamepro (`, Err: fmt.Errorf("missing paren")},
-	{In: `clrmamepro (()`, Err: errUnexpectedToken("(")},
-	{In: `clrmamepro )`, Err: errUnexpectedToken(")")},
+	{In: `clrmamepro (`, Err: errMissingParen},
+	{In: `clrmamepro (()`, Err: errUnexpectedLeftParen},
+	{In: `clrmamepro ())`, Err: errUnexpectedRightParen},
+	{In: `clrmamepro )`, Err: errUnexpectedRightParen},
 	{In: `clrmamepro ( invalid )`, Err: errUnexpectedToken("invalid")},
-	{In: `clrmamepro ( name )`, Err: errUnexpectedToken(")")},
-	{In: `clrmamepro ( description )`, Err: errUnexpectedToken(")")},
-	{In: `clrmamepro ( version )`, Err: errUnexpectedToken(")")},
-	{In: `clrmamepro ( comment )`, Err: errUnexpectedToken(")")},
+	{In: `clrmamepro ( name )`, Err: errUnexpectedRightParen},
+	{In: `clrmamepro ( description )`, Err: errUnexpectedRightParen},
+	{In: `clrmamepro ( version )`, Err: errUnexpectedRightParen},
+	{In: `clrmamepro ( comment )`, Err: errUnexpectedRightParen},
 	{In: `game ()`, Out: &Collection{Games: make([]Game, 1)}},
-	{In: `game (`, Err: fmt.Errorf("missing paren")},
-	{In: `game (()`, Err: errUnexpectedToken("(")},
-	{In: `game ())`, Err: errUnexpectedToken(")")},
-	{In: `game )`, Err: errUnexpectedToken(")")},
+	{In: `game (`, Err: errMissingParen},
+	{In: `game (()`, Err: errUnexpectedLeftParen},
+	{In: `game ())`, Err: errUnexpectedRightParen},
+	{In: `game )`, Err: errUnexpectedRightParen},
 	{In: `game ( invalid )`, Err: errUnexpectedToken("invalid")},
-	{In: `game ( name )`, Err: errUnexpectedToken(")")},
-	{In: `game ( description )`, Err: errUnexpectedToken(")")},
-	{In: `game ( serial )`, Err: errUnexpectedToken(")")},
+	{In: `game ( name )`, Err: errUnexpectedRightParen},
+	{In: `game ( description )`, Err: errUnexpectedRightParen},
+	{In: `game ( serial )`, Err: errUnexpectedRightParen},
 	{In: `game ( rom ())`, Out: &Collection{Games: []Game{{ROM: make([]ROM, 1)}}}},
-	{In: `game ( rom (`, Err: fmt.Errorf("missing paren")},
-	{In: `game ( rom (()`, Err: errUnexpectedToken("(")},
-	{In: `game ( rom )`, Err: errUnexpectedToken(")")},
+	{In: `game ( rom (`, Err: errMissingParen},
+	{In: `game ( rom (()`, Err: errUnexpectedLeftParen},
+	{In: `game ( rom )`, Err: errUnexpectedRightParen},
 	{In: `game ( rom ( invalid ) )`, Err: errUnexpectedToken("invalid")},
-	{In: `game ( rom ( name ) )`, Err: errUnexpectedToken(")")},
-	{In: `game ( rom ( size ) )`, Err: errUnexpectedToken(")")},
-	{In: `game ( rom ( crc ) )`, Err: errUnexpectedToken(")")},
-	{In: `game ( rom ( md5 ) )`, Err: errUnexpectedToken(")")},
-	{In: `game ( rom ( sha1 ) )`, Err: errUnexpectedToken(")")},
-	{In: `game ( rom ( flags ) )`, Err: errUnexpectedToken(")")},
+	{In: `game ( rom ( name ) )`, Err: errUnexpectedRightParen},
+	{In: `game ( rom ( size ) )`, Err: errUnexpectedRightParen},
+	{In: `game ( rom ( crc ) )`, Err: errUnexpectedRightParen},
+	{In: `game ( rom ( md5 ) )`, Err: errUnexpectedRightParen},
+	{In: `game ( rom ( sha1 ) )`, Err: errUnexpectedRightParen},
+	{In: `game ( rom ( flags ) )`, Err: errUnexpectedRightParen},
 	{
 		In: `clrmamepro (
         name "Test Name"
