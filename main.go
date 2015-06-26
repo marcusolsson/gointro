@@ -1,6 +1,7 @@
 package main
 
 import (
+	"archive/zip"
 	"crypto/md5"
 	"crypto/sha1"
 	"encoding/hex"
@@ -9,6 +10,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -27,17 +29,43 @@ func main() {
 		os.Exit(1)
 	}
 
-	var err error
-
-	in, err := os.Open(input)
-	if err != nil {
-		panic(err)
-	}
-	defer in.Close()
-
 	h1, h2 := md5.New(), sha1.New()
 
-	io.Copy(io.MultiWriter(h1, h2), in)
+	if filepath.Ext(input) == ".zip" {
+		r, err := zip.OpenReader(input)
+		if err != nil {
+			panic(err)
+		}
+		defer r.Close()
+
+		if len(r.File) == 0 {
+			fmt.Println("archive is empty")
+			os.Exit(1)
+		}
+
+		if len(r.File) > 1 {
+			fmt.Println("multiple file archives are currently not supported")
+			os.Exit(1)
+		}
+
+		for _, f := range r.File {
+			rc, err := f.Open()
+			if err != nil {
+				panic(err)
+			}
+			defer rc.Close()
+
+			io.Copy(io.MultiWriter(h1, h2), rc)
+		}
+	} else {
+		in, err := os.Open(input)
+		if err != nil {
+			panic(err)
+		}
+		defer in.Close()
+
+		io.Copy(io.MultiWriter(h1, h2), in)
+	}
 
 	md5hash := strings.ToUpper(hex.EncodeToString(h1.Sum(nil)))
 	sha1hash := strings.ToUpper(hex.EncodeToString(h2.Sum(nil)))
