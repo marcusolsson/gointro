@@ -29,7 +29,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	// Parse datset.
 	f, err := os.Open(datset)
 	if err != nil {
 		panic(err)
